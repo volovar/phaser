@@ -44,6 +44,27 @@ var ParseTilesets = function (json)
                 newSet.tileProperties = set.tileproperties;
             }
 
+            // New versions of Tiled store an array of tiles, with properties being included per tile
+            if (typeof set.tiles.length === 'number') {
+                const newTileProps = {}
+                
+                set.tiles.forEach(
+                    (tile, tI) => {
+                        const val = {}
+
+                        tile.properties.forEach(
+                            prop => {
+                                val[prop.name] = prop.value
+                            }
+                        )
+
+                        newTileProps[tI] = val
+                    }
+                )
+
+                newSet.tileProperties = newTileProps
+            }
+
             // Object & terrain shapes stored per-tile in object with string indexes starting at "0"
             if (set.tiles)
             {
