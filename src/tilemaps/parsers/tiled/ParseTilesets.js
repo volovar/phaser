@@ -45,7 +45,7 @@ var ParseTilesets = function (json)
             }
 
             // New versions of Tiled store an array of tiles, with properties being included per tile
-            if (typeof set.tiles.length === 'number') {
+            if (typeof set.tiles !== 'undefined' && typeof set.tiles.length === 'number') {
                 const newTileProps = {}
                 
                 set.tiles.forEach(
