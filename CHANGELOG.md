@@ -1,6 +1,27 @@
 # Change Log
 
-## Version 3.12.0 - Silica - in development
+## Version 3.13.0 - Yuuki - in development
+
+## New Features
+
+## Updates
+
+* The Graphics Canvas Renderer will now automatically call `beginPath` on the target context before processing the command stack. This has the effect of clearing off any sub-paths that may have persisted on the stack from previous Graphics objects or frames. This makes it more in-line with WebGL re: expectations when calling `Graphics.clear`.
+* `initPipeline` now defaults to the Texture Tint Pipeline if nothing else is specified. This allowed me to remove explicit strings from 11 different Game Objects, saving some bytes in the process.
+
+## Bug Fixes
+
+* TileSprite.setTileScale would set the tile position by mistake, instead of the scale. Using the properties directly worked, but the method was incorrect (thanks @alexeymolchan)
+* Calling `Text.setStyle` would make the Text vanish if you didn't provide a `resolution` property in the style configuration object. Calling `setStyle` now only changes the properties given in the object, leaving any previously changed properties as-is. Fix #4011 (thanks @okcompewter)
+* In Matter.js if a body had its debug `render.visible` property set to `false` it wouldn't then render any other debug body beyond it. Now it will just skip bodies with hidden debug graphics (thanks @jf908)
+
+### Examples, Documentation and TypeScript
+
+My thanks to the following for helping with the Phaser 3 Examples, Docs and TypeScript definitions, either by reporting errors, fixing them or helping author the docs:
+
+
+
+## Version 3.12.0 - Silica - 4th September 2018
 
 ### FlatTintPipeline Updates
 
@@ -139,7 +160,7 @@ You can find the source for Camera 3D in the new `plugins/camera3d` folder, alon
 * `Graphics.lineGradientStyle` is a new WebGL only method that allows you to set a gradient for the shapes being stroked. You can control the colors at the 4 corners of a rectangle. The colors are then blended automatically in the shader. Use of this feature is limited. For example, you cannot gradient stroke a whole path or an arc, as it's made up of lots of triangles. But for quick gradient lines it's perfect.
 * `TextureManager.getBase64` is a new method that will take a texture frame key and return a base64 encoded version of the frame. You can also provide the image type and encoder options.
 * Global Plugins now have a new optional `data` object, the contents of which are passed to the plugins `init` method. This allows users to pass data directly into a plugin when added in the config: `{ key: 'BankPlugin', plugin: BankPluginV3, start: true, data: { gold: 5000 } }` or when adding a plugin via the `install` method (thanks @samme)
-* You can now play animations in reverse! Use the new `Sprite.anims.playReverse` method to play a pre-defined animation in reverse from its starting frame. Or call `Sprite.anims.reverse` to immediately reverse the flow of an already running animation. Animations running in reverse still count towards the repeat total and respect the yoyo flag (thanks @khaleb85)
+* You can now play animations in reverse! Use the new `Sprite.anims.playReverse` method to play a pre-defined animation in reverse from its starting frame. Or call `Sprite.anims.reverse` to immediately reverse the flow of an already running animation. Animations running in reverse still count towards the repeat total and respect the yoyo flag (thanks @khaleb85 @Ben-Millions)
 * The `ParticleEmitterManager` now has the Transform component. This means you can now set the position, rotation or scale of the Emitter Manager, and it will influence every Emitter it is rendering. The Managers transform is mixed with that of the Camera. This works in both Canvas and WebGL.
 * `TextureManager.addRenderTexture` is a new method that will add a Render Texture into the Texture Manager, allowing you to use it as the texture for Game Objects just by using the texture key. Modifying the source Render Texture will immediately modify any Game Objects using it.
 * TextureSource has a new boolean property `isRenderTexture` which is set automatically when it's created.
@@ -215,7 +236,7 @@ Setting the `resolution` property in the Game Config to a value other than 1 wou
 * The Camera Fade Effect would display the fade fill rectangle at the wrong size. Camera fades now respect the resolution.
 * The Camera Flash Effect would display the fade fill rectangle at the wrong size. Camera flashes now respect the resolution.
 * The Camera Shake Effect would shake the Camera using the wrong width values. Camera Shakes now respect the resolution.
-* Input calculations would not factor in the Game Resolution correctly. If a Camera viewport was not at 0x0 or not the full size, or the Camera was rotated or zoomed, the input areas would be wrong if `resolution` was > 1. These are now factored in correctly and changing the resolution no longer breaks input. Fix #3606 (thanks @Secretmapper)
+* Input calculations would not factor in the Game Resolution correctly. If a Camera viewport was not at 0x0 or not the full size, or the Camera was rotated or zoomed, the input areas would be wrong if `resolution` was > 1. These are now factored in correctly and changing the resolution no longer breaks input. Fix #3606 (thanks @Secretmapper @thanh-taro)
 
 ### Bug Fixes
 
@@ -247,10 +268,12 @@ Setting the `resolution` property in the Game Config to a value other than 1 wou
 * A Game Object couldn't have a blend mode of `SKIP_TEST` set by using the getter or the `setBlendMode` method.
 * In Arcade Physics the `World.disable` call was passing the wrong argument, so never disabling the actual body (thanks @samme)
 * There was a visual bug with Rounded Rectangles in Canvas mode, due to the addition of the `overshoot` argument in the Graphics arc call. This has been fixed, so arcs will now render correctly and consistently in WebGL and Canvas and Rounded Rectangles are back to normal again too. Fix #3912 (thanks @valse)
-* The `InputManager.inputCandidate` method, which determines if a Game Object can be interacted with by a given Pointer and Camera combination, now takes the full camera status into consideration. This means if a Camera is set to ignore a Game Object you can now longer interact with it, or if the Camera is ignoring a Container with an interactive Game Object inside it, you cannot interact with the Container children any more. Previously they would interact regardless of the Camera state. Fix #3984 (thanks @NemoStein @samid737)
+* The `InputManager.inputCandidate` method, which determines if a Game Object can be interacted with by a given Pointer and Camera combination, now takes the full camera status into consideration. This means if a Camera is set to ignore a Game Object you can now no longer interact with it, or if the Camera is ignoring a Container with an interactive Game Object inside it, you cannot interact with the Container children anymore. Previously they would interact regardless of the Camera state. Fix #3984 (thanks @NemoStein @samid737)
 * `Transform.getWorldTransformMatrix` has been recoded to iterate the transform parents correctly, applying the matrix multiplications as it goes. This (along with some changes in the Input Manager) fix the issue with Game Objects inside of Containers failing hit tests between certain angles. Fix #3920 (thanks @chaping @hackhat)
 * Calling Arcade Physics `collide` during an `update` method wouldn't inject the results back into the Body parent, causing the bodies to carry on moving. Using Colliders worked, but manually checking did not. Now, both methods work. Fix #3777 (thanks @samme)
 * The `setTintFill` method would ignore the `alpha` value of the Game Object in the shader. The alpha value is now blended with the tint fill, allowing you to properly alpha out tint-filled Game Objects. Fix #3992 (thanks @trl-bsd)
+* Arcade Physics World `collideSpriteVsTilemapLayer` now syncs the collision results back to the body, allowing you to call `collide` from within an update loop once again. Fix #3999 (thanks @nkholski @mikewesthad)
+* Arcade Physics Body `deltaX` and `deltaY` methods will now return the previous steps delta values, rather than zero. Fix #3987 (thanks @HaoboZ)
 
 ### Examples, Documentation and TypeScript
 

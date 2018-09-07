@@ -36,6 +36,17 @@ var GameObjects = {
     TileSprite: require('./tilesprite/TileSprite'),
     Zone: require('./zone/Zone'),
 
+    //  Shapes
+
+    Shape: require('./shape/Shape'),
+    Arc: require('./shape/arc/Arc'),
+    Ellipse: require('./shape/ellipse/Ellipse'),
+    IsoBox: require('./shape/isobox/IsoBox'),
+    Polygon: require('./shape/polygon/Polygon'),
+    Rectangle: require('./shape/rectangle/Rectangle'),
+    Star: require('./shape/star/Star'),
+    Triangle: require('./shape/triangle/Triangle'),
+
     //  Game Object Factories
 
     Factories: {
@@ -52,7 +63,16 @@ var GameObjects = {
         StaticBitmapText: require('./bitmaptext/static/BitmapTextFactory'),
         Text: require('./text/static/TextFactory'),
         TileSprite: require('./tilesprite/TileSpriteFactory'),
-        Zone: require('./zone/ZoneFactory')
+        Zone: require('./zone/ZoneFactory'),
+
+        //  Shapes
+        Arc: require('./shape/arc/ArcFactory'),
+        Ellipse: require('./shape/ellipse/EllipseFactory'),
+        IsoBox: require('./shape/isobox/IsoBoxFactory'),
+        Polygon: require('./shape/polygon/PolygonFactory'),
+        Rectangle: require('./shape/rectangle/RectangleFactory'),
+        Star: require('./shape/star/StarFactory'),
+        Triangle: require('./shape/triangle/TriangleFactory')
     },
 
     Creators: {
